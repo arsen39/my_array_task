@@ -49,7 +49,7 @@ function MyArrayPrototype() {
     return undefined;
   };
 
-  this.conctact = function contact() {
+  this.concat = function concat() {
     const newArray = JSON.parse(JSON.stringify(this));
     for (let i = 0; i < arguments.length; i++) {
       if (arguments[i] instanceof Array || arguments[i] instanceof MyArray) {
