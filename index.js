@@ -2,10 +2,7 @@ function MyArray() {
   this.length = 0;
 
   this.isMyArray = function isMyArray(arg) {
-    if (arg instanceof MyArray) {
-      return true;
-    }
-    return false;
+    return (arg instanceof MyArray);
   };
 }
 
