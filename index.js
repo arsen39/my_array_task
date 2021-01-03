@@ -2,7 +2,7 @@ function MyArray() {
   this.length = 0;
 
   this.isMyArray = function isMyArray(arg) {
-    return (arg instanceof MyArray);
+    return arg instanceof MyArray;
   };
 }
 
@@ -71,6 +71,18 @@ function MyArrayPrototype() {
     }
     return this;
   };
+
+  //Это, скажем так, пародия на функцию forEach т.к. я не до конца даже понимаю суть работы оригинальной
+  //функции, а написать свой аналог сейчас вообще не представляю возможным
+
+  this.foreach = function foreach(func) {
+    for (let i = 0; i < this.length; i++) {
+      func (this[i]);
+    }
+    return undefined;
+  };
+
 }
 
 MyArray.prototype = new MyArrayPrototype();
+
