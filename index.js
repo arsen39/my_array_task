@@ -74,7 +74,7 @@ function MyArrayPrototype() {
 
   this.foreach = function foreach(func) {
     for (let i = 0; i < this.length; i++) {
-      func (this[i], i, this);
+      func(this[i], i, this);
     }
     return undefined;
   };
@@ -82,12 +82,29 @@ function MyArrayPrototype() {
   this.map = function map(func) {
     const newArr = [];
     for (let i = 0; i < this.length; i++) {
-      newArr.push(func (this[i], i, this));
+      newArr.push(func(this[i], i, this));
     }
     return newArr;
-  }
+  };
 
+  this.flat = function flat(depth) {
+    const newArr = [];
+    const those = this;
+    const flatter = function flatter(depth, those) {
+      if (depth > 1) {
+        flatter(depth - 1, those);
+      } else {
+        those.foreach((item, number, arr) => {
+          if (item instanceof Array || item instanceof MyArray) {
+            item.foreach((item) => {
+              newArr.push(item);
+            });
+          }
+        });
+      }
+    };
+    return newArr;
+  };
 }
 
 MyArray.prototype = new MyArrayPrototype();
-
