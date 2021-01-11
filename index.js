@@ -72,15 +72,20 @@ function MyArrayPrototype() {
     return this;
   };
 
-  //Это, скажем так, пародия на функцию forEach т.к. я не до конца даже понимаю суть работы оригинальной
-  //функции, а написать свой аналог сейчас вообще не представляю возможным
-
   this.foreach = function foreach(func) {
     for (let i = 0; i < this.length; i++) {
-      func (this[i]);
+      func (this[i], i, this);
     }
     return undefined;
   };
+
+  this.map = function map(func) {
+    const newArr = [];
+    for (let i = 0; i < this.length; i++) {
+      newArr.push(func (this[i], i, this));
+    }
+    return newArr;
+  }
 
 }
 
