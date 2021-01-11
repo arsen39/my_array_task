@@ -91,18 +91,17 @@ function MyArrayPrototype() {
     const newArr = [];
     const those = this;
     const flatter = function flatter(depth, those) {
-      if (depth > 1) {
-        flatter(depth - 1, those);
-      } else {
-        those.foreach((item, number, arr) => {
-          if (item instanceof Array || item instanceof MyArray) {
-            item.foreach((item) => {
-              newArr.push(item);
-            });
-          }
-        });
-      }
+      those.foreach((item) => {
+        if (item instanceof Array || item instanceof MyArray) {
+          item.foreach((item2) => {
+            newArr.push(item2);
+          });
+        } else {
+          newArr.push(item);
+        }
+      });
     };
+    flatter(undefined,those);
     return newArr;
   };
 }
