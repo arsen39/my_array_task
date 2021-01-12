@@ -111,6 +111,9 @@ function MyArrayPrototype() {
         newArr.push(those);
       }
     };
+    if (typeof depth !== 'number') {
+      throw new TypeError ('Depth must be a number or empty')
+    }
     flatter(depth, those);
     return newArr;
   };
