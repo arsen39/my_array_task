@@ -50,7 +50,7 @@ function MyArrayPrototype() {
   };
 
   this.concat = function concat() {
-    const newArray = JSON.parse(JSON.stringify(this));
+    const newArray = Object.assign(new MyArray(), this);
     for (let i = 0; i < arguments.length; i++) {
       if (arguments[i] instanceof Array || arguments[i] instanceof MyArray) {
         for (j = 0; j < arguments[i].length; j++) {
@@ -65,14 +65,14 @@ function MyArrayPrototype() {
   };
 
   this.reverse = function reverse() {
-    const arrayCopy = JSON.parse(JSON.stringify(this));
-    for (let i = 0; i < arrayCopy.length; i++) {
-      this[i] = arrayCopy[arrayCopy.length - 1 - i];
+    const arrayCopy = Object.assign(new MyArray(), this);
+    for (let i = 0; i < this.length; i++) {
+      this[i] = arrayCopy.pop();
     }
     return this;
   };
 
-  this.foreach = function foreach(func) {
+  this.forEach = function forEach(func) {
     for (let i = 0; i < this.length; i++) {
       func(this[i], i, this);
     }
@@ -80,28 +80,38 @@ function MyArrayPrototype() {
   };
 
   this.map = function map(func) {
-    const newArr = [];
+    const newArr = new MyArray();
     for (let i = 0; i < this.length; i++) {
       newArr.push(func(this[i], i, this));
     }
     return newArr;
   };
 
-  this.flat = function flat(depth) {
-    const newArr = [];
+  this.flat = function flat(depth = 1) {
+    const newArr = new MyArray();
     const those = this;
     const flatter = function flatter(depth, those) {
-      those.foreach((item) => {
-        if (item instanceof Array || item instanceof MyArray) {
-          item.foreach((item2) => {
-            newArr.push(item2);
-          });
-        } else {
-          newArr.push(item);
-        }
-      });
+      if (those instanceof Array || those instanceof MyArray) {
+        those.forEach((item) => {
+          if (item instanceof Array || item instanceof MyArray) {
+            if (depth > 1) {
+              item.forEach((itemsItem) => {
+                flatter(depth - 1, itemsItem);
+              });
+            } else {
+              item.forEach((itemsItem) => {
+                newArr.push(itemsItem);
+              });
+            }
+          } else {
+            newArr.push(item);
+          }
+        });
+      } else {
+        newArr.push(those);
+      }
     };
-    flatter(undefined,those);
+    flatter(depth, those);
     return newArr;
   };
 }
