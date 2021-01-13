@@ -20,7 +20,7 @@ function MyArrayPrototype() {
       delete this[this.length-- - 1];
       return deleteElement;
     }
-    return undefined;
+    return;
   };
 
   this.unshift = function unshift() {
@@ -46,7 +46,7 @@ function MyArrayPrototype() {
       delete this[--this.length];
       return deleteElement;
     }
-    return undefined;
+    return;
   };
 
   this.concat = function concat() {
@@ -76,7 +76,7 @@ function MyArrayPrototype() {
     for (let i = 0; i < this.length; i++) {
       func(this[i], i, this);
     }
-    return undefined;
+    return;
   };
 
   this.map = function map(func) {
