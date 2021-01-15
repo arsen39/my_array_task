@@ -39,9 +39,9 @@ class MyArray {
       const deleteElement = this[0];
       delete this[0];
 
-      this.forEach ((item, numb) => {
+      this.forEach((item, numb) => {
         item = this[numb + 1];
-      })
+      });
 
       delete this[--this.length];
       return deleteElement;
@@ -49,26 +49,20 @@ class MyArray {
     return;
   }
 
-  concat() {
-    const newArray = Object.assign(new MyArray(), this);
-    for (let i = 0; i < arguments.length; i++) {
-      if (arguments[i] instanceof Array || arguments[i] instanceof MyArray) {
-        for (let j = 0; j < arguments[i].length; j++) {
-          newArray[newArray.length++] = arguments[i][j];
-        }
-      } else {
-        newArray[newArray.length++] = arguments[i];
-      }
+  concat(...args) {
+    const newArray = new MyArray();
+    newArray.push(...this);
+    for (const item of args) {
+      newArray.push(...item);
     }
-
     return newArray;
   }
 
   reverse() {
     const arrayCopy = Object.assign(new MyArray(), this);
-    this.forEach ((item, numb) => {
+    this.forEach((item, numb) => {
       this[numb] = arrayCopy.pop();
-    })
+    });
     return this;
   }
 
@@ -92,14 +86,14 @@ class MyArray {
       throw new TypeError("Depth must be a number or empty");
     }
 
-    let newArr = new MyArray ();
+    let newArr = new MyArray();
     this.forEach((item) => {
       if ((MyArray.isMyArray(item) || Array.isArray(item)) && depth) {
         newArr = newArr.concat(item.flat(depth - 1));
       } else if (item !== undefined) {
         newArr.push(item);
       }
-    })
+    });
     return newArr;
   }
 
