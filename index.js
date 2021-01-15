@@ -1,59 +1,59 @@
-function MyArray() {
-  this.length = 0;
+class MyArray {
+  constructor(...args) {
+    this.length = 0;
 
-  this.isMyArray = function isMyArray(arg) {
-    return arg instanceof MyArray;
-  };
-}
+    for (const item of args) {
+      this[this.length++] = item;
+    }
+  }
 
-function MyArrayPrototype() {
-  this.push = function push() {
-    for (let i = 0; i < arguments.length; i++) {
-      this[this.length++] = arguments[i];
+  push(...args) {
+    for (const item of args) {
+      this[this.length++] = item;
     }
     return this.length;
-  };
+  }
 
-  this.pop = function pop() {
-    if (this.length !== 0) {
+  pop() {
+    if (this.length) {
       const deleteElement = this[this.length - 1];
       delete this[this.length-- - 1];
       return deleteElement;
     }
     return;
-  };
+  }
 
-  this.unshift = function unshift() {
-    for (let i = 0; i < this.length; i++) {
-      this[arguments.length + i] = this[i];
-    }
-    for (let i = 0; i < arguments.length; i++) {
-      this[i] = arguments[i];
-    }
-    this.length += arguments.length;
+  unshift(...args) {
+    args.forEach((item, numb) => {
+      this.forEach((item, numb) => {
+        this[this.length - numb] = this[this.length - numb - 1];
+      });
+      this[numb] = item;
+      this.length++;
+    });
     return this.length;
-  };
+  }
 
-  this.shift = function shift() {
-    if (this.length !== 0) {
+  shift() {
+    if (this.length) {
       const deleteElement = this[0];
       delete this[0];
 
-      for (let i = 0; i < this.length; i++) {
-        this[i] = this[i + 1];
-      }
+      this.forEach ((item, numb) => {
+        item = this[numb + 1];
+      })
 
       delete this[--this.length];
       return deleteElement;
     }
     return;
-  };
+  }
 
-  this.concat = function concat() {
+  concat() {
     const newArray = Object.assign(new MyArray(), this);
     for (let i = 0; i < arguments.length; i++) {
       if (arguments[i] instanceof Array || arguments[i] instanceof MyArray) {
-        for (j = 0; j < arguments[i].length; j++) {
+        for (let j = 0; j < arguments[i].length; j++) {
           newArray[newArray.length++] = arguments[i][j];
         }
       } else {
@@ -62,61 +62,66 @@ function MyArrayPrototype() {
     }
 
     return newArray;
-  };
+  }
 
-  this.reverse = function reverse() {
+  reverse() {
     const arrayCopy = Object.assign(new MyArray(), this);
-    for (let i = 0; i < this.length; i++) {
-      this[i] = arrayCopy.pop();
-    }
+    this.forEach ((item, numb) => {
+      this[numb] = arrayCopy.pop();
+    })
     return this;
-  };
+  }
 
-  this.forEach = function forEach(func) {
+  forEach(func) {
     for (let i = 0; i < this.length; i++) {
       func(this[i], i, this);
     }
     return;
-  };
+  }
 
-  this.map = function map(func) {
+  map(func) {
     const newArr = new MyArray();
     for (let i = 0; i < this.length; i++) {
       newArr.push(func(this[i], i, this));
     }
     return newArr;
-  };
+  }
 
-  this.flat = function flat(depth = 1) {
-    const newArr = new MyArray();
-    const those = this;
-    const flatter = function flatter(depth, those) {
-      if (those instanceof Array || those instanceof MyArray) {
-        those.forEach((item) => {
-          if (item instanceof Array || item instanceof MyArray) {
-            if (depth > 1) {
-              item.forEach((itemsItem) => {
-                flatter(depth - 1, itemsItem);
-              });
-            } else {
-              item.forEach((itemsItem) => {
-                newArr.push(itemsItem);
-              });
-            }
-          } else {
-            newArr.push(item);
-          }
-        });
-      } else {
-        newArr.push(those);
-      }
-    };
-    if (typeof depth !== 'number') {
-      throw new TypeError ('Depth must be a number or empty')
+  flat(depth = 1) {
+    if (typeof depth !== "number") {
+      throw new TypeError("Depth must be a number or empty");
     }
-    flatter(depth, those);
+
+    let newArr = new MyArray ();
+    this.forEach((item) => {
+      if ((MyArray.isMyArray(item) || Array.isArray(item)) && depth) {
+        newArr = newArr.concat(item.flat(depth - 1));
+      } else if (item !== undefined) {
+        newArr.push(item);
+      }
+    })
     return newArr;
-  };
+  }
+
+  static isMyArray(arg) {
+    return arg instanceof MyArray;
+  }
+
+  [Symbol.iterator]() {
+    return new MyArrayIterator(this);
+  }
 }
 
-MyArray.prototype = new MyArrayPrototype();
+class MyArrayIterator {
+  constructor(myArray) {
+    this.array = myArray;
+    this.currentValue = 0;
+  }
+
+  next() {
+    return {
+      value: this.array[this.currentValue++],
+      done: this.currentValue > this.array.length,
+    };
+  }
+}
