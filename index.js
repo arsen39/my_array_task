@@ -17,20 +17,20 @@ class MyArray {
   pop() {
     if (this.length) {
       const deleteElement = this[this.length - 1];
-      delete this[this.length-- - 1];
+      delete this[--this.length];
       return deleteElement;
     }
     return;
   }
 
   unshift(...args) {
-    args.forEach((item, numb) => {
-      this.forEach((item, numb) => {
-        this[this.length - numb] = this[this.length - numb - 1];
-      });
-      this[numb] = item;
-      this.length++;
+    args.push(...this);
+    this.forEach((item, numb) => {
+      delete this[numb];
     });
+    this.length = 0;
+    this.push(...args);
+    
     return this.length;
   }
 
